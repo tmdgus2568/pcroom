@@ -89,6 +89,13 @@ create table SEAT(
 alter table seat rename column is_usavle to is_usable;
 
 select * from SEAT;
+insert into SEAT values (1,'Y');
+insert into SEAT values (2,'Y');
+insert into SEAT values (3,'Y');
+insert into SEAT values (4,'Y');
+insert into SEAT values (5,'Y');
+insert into SEAT values (6,'Y');
+commit;
 
 create table VISIT(
     id int not null primary key ,

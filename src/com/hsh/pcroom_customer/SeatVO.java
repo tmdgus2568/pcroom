@@ -2,11 +2,14 @@ package com.hsh.pcroom_customer;
 
 public class SeatVO {
     private int id;
-    private char is_usable;
+    private String is_usable;
 
-    public SeatVO(int id, char is_usable) {
+    public SeatVO(int id, String is_usable) {
         this.id = id;
         this.is_usable = is_usable;
+    }
+
+    public SeatVO() {
     }
 
     public int getId() {
@@ -17,11 +20,11 @@ public class SeatVO {
         this.id = id;
     }
 
-    public char getIs_usable() {
+    public String getIs_usable() {
         return is_usable;
     }
 
-    public void setIs_usable(char is_usable) {
+    public void setIs_usable(String is_usable) {
         this.is_usable = is_usable;
     }
 }

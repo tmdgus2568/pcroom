@@ -36,14 +36,24 @@ drop table MEMBER;
 drop table RATEPLAN;
 
 create table RATEPLAN(
-                         plan_id int not null primary key,
-                         name varchar2(30) not null unique ,
-                         apply_time timestamp not null ,
-                         price int not null
+                         id varchar2(30) not null primary key ,
+                         apply_time int not null ,
+                         price int not null,
+                         role varchar2(10) not null
 );
-alter table RATEPLAN modify apply_time int not null;
+
+alter table RATEPLAN add role varchar2(10) not null;
+alter table RATEPLAN modify apply_time int;
 delete RATEPLAN;
 select * from RATEPLAN;
+
+insert into RATEPLAN values ('회원 1시간 요금제',60,1000,'회원');
+insert into RATEPLAN values ('회원 2시간 요금제',120,2000,'회원');
+insert into RATEPLAN values ('회원 3시간 요금제',180,3000,'회원');
+insert into RATEPLAN values ('회원 6시간 요금제',3600,5000,'회원');
+commit;
+
+
 
 truncate table RATEPLAN;
 
@@ -53,7 +63,7 @@ values ('학생 1300원 이벤트',sysdate,2000);
 drop table BUYTIME;
 create table BUYTIME(
                         id int not null primary key ,
-                        plan_id int not null references RATEPLAN(plan_id),
+                        plan_id varchar2(30) not null references RATEPLAN(id),
                         customer_id varchar2(30) not null references CUSTOMER(id),
                         payment_date date not null,
                         payment_way varchar2(10) not null
@@ -95,6 +105,7 @@ insert into SEAT values (3,'Y');
 insert into SEAT values (4,'Y');
 insert into SEAT values (5,'Y');
 insert into SEAT values (6,'Y');
+commit;
 
 create table VISIT(
     id int not null primary key ,

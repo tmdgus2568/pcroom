@@ -6,42 +6,67 @@ import java.io.InputStreamReader;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 // 고객의 컴퓨터에서
 public class UserComputerController {
     static UserComputerService service = new UserComputerService();
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while(true){
-            System.out.println("==========자리를 선택해 주세요===========");
-            System.out.println(" 1.회원가입 / 2.로그인");
-            System.out.println("====================================");
+            int choiceSeatId = 0;
+            try{
+                while (true){
+                    UserComputerView.display("==========자리를 선택해 주세요(좌석현황)===========");
+                    List<SeatVO> seats = showUsableSeats();
+                    UserComputerView.display("\n====================================");
+                    choiceSeatId = Integer.parseInt(br.readLine());
+                    // return값이 1이면 원하는 1개 업데이트이므로
+                    if(service.updateSeat(choiceSeatId, "N") == 1){
+                        if(seats.get(choiceSeatId-1).getIs_usable().equals("N")){
+                            UserComputerView.display("이미 사용중인 좌석입니다. 다시 선택해 주세요.");
+                        }
+                        else{
+                            UserComputerView.display("============" + choiceSeatId + "번 자리를 선택하였습니다." + "============");
+                            break;
+                        }
 
-            System.out.println("==========숫자를 선택해 주세요===========");
-            System.out.println(" 1.회원가입 / 2.로그인 / 3.시스템종료");
-            System.out.println("====================================");
-            String selectNum = br.readLine();
+                    }
+                    else{
+                        UserComputerView.display("좌석 선택에 실패하였습니다. 다시 선택해 주세요.");
+                    }
+                }
 
-            switch (selectNum){
-                case "1":
-                    System.out.println("==========회원 정보를 입력해주세요===========\"");
-                    signUp(); break;
-                case "2":
-                    System.out.print("아이디 : ");
-                    String id = br.readLine();
 
-                    System.out.print("비밀번호 : ");
-                    String pw = br.readLine();
+                UserComputerView.display("==========숫자를 선택해 주세요===========");
+                UserComputerView.display(" 1.회원가입 / 2.로그인 / 3.시스템종료");
+                UserComputerView.display("====================================");
+                String selectNum = br.readLine();
 
-                    signIn(id, pw); break;
+                switch (selectNum){
+                    case "1":
+                        System.out.println("==========회원 정보를 입력해주세요===========\"");
+                        signUp(); break;
+                    case "2":
+                        System.out.print("아이디 : ");
+                        String id = br.readLine();
 
-                case "3":
-                    System.out.println("시스템을 종료합니다. 안녕히 가세요(__)");
-                    break;
-                default:
-                    System.out.println("잘못 입력하셨습니다. 다시 선택해 주세요 !");
-                    break;
+                        System.out.print("비밀번호 : ");
+                        String pw = br.readLine();
+
+                        signIn(id, pw); break;
+
+                    case "3":
+                        exit(choiceSeatId);
+                        return;
+                    default:
+                        System.out.println("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                        break;
+                }
+            }catch (IOException | IllegalArgumentException e){
+                UserComputerView.display("잘못된 입력 형식입니다. 확인 후 다시 입력해 주세요.");
             }
+
 
         }
     }
@@ -153,6 +178,7 @@ public class UserComputerController {
             }
             else{
                 UserComputerView.display("로그인에 성공하였습니다");
+                //
             }
         }
         else{
@@ -163,6 +189,38 @@ public class UserComputerController {
     // 남아있는 시간이 있다면 로그인 가능
     private static void afterSignIn(CustomerVO customer){
 
+        // 컴퓨터 실행중 ....
+        // 현재 시간에서 남아있는 시간을 더한 후,
+        // 그 시간이 되면 강제 종료
+
     }
+
+    // 사용가능한 좌석 확인
+    private static List<SeatVO> showUsableSeats(){
+        List<SeatVO> seats = service.selectSeatAll();
+        for(int i=0;i<seats.size();i++){
+            String show = "";
+            SeatVO seat = seats.get(i);
+            // 사용가능한 자리는 좌석 번호(id)를 보여줌
+            if(seat.getIs_usable().equals("Y")){
+                show = String.valueOf(seat.getId());
+            }
+            // 사용불가능한 자리는 X로 보여줌
+            else{
+                show = "X";
+            }
+            show += "\t";
+            if((i+1)%4 == 0) show += "\n";
+
+            System.out.print(show);
+        }
+        return seats;
+    }
+
+    private static void exit(int id){
+        System.out.println("시스템을 종료합니다. 안녕히 가세요(__)");
+        service.updateSeat(id, "Y");
+    }
+
 
 }

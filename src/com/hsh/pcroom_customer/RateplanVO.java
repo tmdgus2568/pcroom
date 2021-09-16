@@ -1,32 +1,27 @@
 package com.hsh.pcroom_customer;
 
 public class RateplanVO {
-    private int paln_id;
-    private String name;
+    private String id;
     private int apply_time;
     private int price;
+    private String role;
 
-    public RateplanVO(int paln_id, String name, int apply_time, int price) {
-        this.paln_id = paln_id;
-        this.name = name;
+    public RateplanVO(String id,  int apply_time, int price, String role) {
+        this.id = id;
         this.apply_time = apply_time;
         this.price = price;
+        this.role = role;
     }
 
-    public int getPaln_id() {
-        return paln_id;
+    public RateplanVO() {
     }
 
-    public void setPaln_id(int paln_id) {
-        this.paln_id = paln_id;
+    public String getId() {
+        return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getApply_time() {
@@ -43,5 +38,13 @@ public class RateplanVO {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
