@@ -17,6 +17,9 @@ public class VisitVO {
         this.exit_date = exit_date;
     }
 
+    public VisitVO() {
+    }
+
     public int getId() {
         return id;
     }

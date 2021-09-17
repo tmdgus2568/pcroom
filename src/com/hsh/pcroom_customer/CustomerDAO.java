@@ -68,6 +68,72 @@ public class CustomerDAO {
         return result;
     }
 
+    // 요금 결제 시, update -> 결제 관련이므로 프로지서(트랜잭션)처리
+    public int updateCustomerForBuyTime(String customerId, int apply_time, String rateplanId) {
+        Connection conn = DBUtil.dbConnect();
+        CallableStatement st = null;
+        int result = 0;
+        try{
+            st = conn.prepareCall("{call buy_rateplan_proc(?,?,?)}");
+            st.setString(1,customerId);
+            st.setInt(2,apply_time);
+            st.setString(3,rateplanId);
+
+            result = st.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("데이터베이스 오류가 발생하였습니다.");
+        }finally {
+            DBUtil.dbClose(conn, st,null);
+        }
+        return result;
+    }
+
+    public int updateCustomerRemainTime(CustomerVO customer){
+        Connection conn = DBUtil.dbConnect();
+        PreparedStatement st = null;
+        String sql = "update customer set remain_time=? where id=?";
+        int result = 0;
+
+        try {
+            st = conn.prepareStatement(sql);
+            st.setInt(1, customer.getRemain_time());
+            st.setString(2, customer.getId());
+            result = st.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("데이터베이스 오류가 발생하였습니다.");
+        }finally {
+            DBUtil.dbClose(conn, st, null);
+        }
+        return result;
+    }
+
+    public CustomerVO selectCustomerById(String id){
+        Connection conn = DBUtil.dbConnect();
+        PreparedStatement st = null;
+        String sql = "select * from customer where id=?";
+        CustomerVO result = null;
+        ResultSet rs = null;
+
+        try{
+            st = conn.prepareStatement(sql);
+            st.setString(1,id);
+            rs = st.executeQuery();
+
+            if(rs.next()){
+                result = makeCustomer(rs);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("데이터베이스 오류가 발생하였습니다.");
+        }finally {
+            DBUtil.dbClose(conn, st, rs);
+        }
+        return result;
+    }
+
+
     private CustomerVO makeCustomer(ResultSet rs) throws SQLException{
         CustomerVO customer = new CustomerVO();
 

@@ -48,8 +48,10 @@ public class SeatDAO {
             st.setInt(3, id);
             result = st.executeUpdate();
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DBUtil.dbClose(conn, st, null);
         }
         return result;
     }

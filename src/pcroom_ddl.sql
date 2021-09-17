@@ -65,8 +65,7 @@ create table BUYTIME(
                         id int not null primary key ,
                         plan_id varchar2(30) not null references RATEPLAN(id),
                         customer_id varchar2(30) not null references CUSTOMER(id),
-                        payment_date date not null,
-                        payment_way varchar2(10) not null
+                        payment_date date not null
 );
 
 select * from BUYTIME;
@@ -107,6 +106,10 @@ insert into SEAT values (5,'Y');
 insert into SEAT values (6,'Y');
 commit;
 
+update SEAT set is_usable='Y';
+commit ;
+
+
 create table VISIT(
     id int not null primary key ,
     customer_id varchar2(30) not null references CUSTOMER(id),
@@ -117,6 +120,9 @@ create table VISIT(
 );
 
 select * from VISIT;
+
+insert into visit(customer_id, seat_id, exit_date)
+values('morphing25',5,sysdate);
 
 
 
