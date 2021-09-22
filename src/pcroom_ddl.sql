@@ -78,6 +78,26 @@ create table PRODUCT(
 
 select * from PRODUCT;
 
+alter table PRODUCT add kinds varchar2(30) not null;
+insert into PRODUCT(name, price, kinds) values ('콜라',1000,'음료');
+insert into PRODUCT(name, price, kinds) values ('환타',1000,'음료');
+insert into PRODUCT(name, price, kinds) values ('마운틴듀',1000,'음료');
+insert into PRODUCT(name, price, kinds) values ('사이다',1000,'음료');
+insert into PRODUCT(name, price, kinds) values ('신라면',2000,'라면');
+insert into PRODUCT(name, price, kinds) values ('진라면',2000,'라면');
+insert into PRODUCT(name, price, kinds) values ('불닭볶음면',2000,'라면');
+insert into PRODUCT(name, price, kinds) values ('딜러핫치킨마요볶음면',3000,'라면');
+insert into PRODUCT(name, price, kinds) values ('김치볶음밥',3500,'식사류');
+insert into PRODUCT(name, price, kinds) values ('치킨마요덮밥',4500,'식사류');
+insert into PRODUCT(name, price, kinds) values ('불닭마요덮밥',4500,'식사류');
+insert into PRODUCT(name, price, kinds) values ('신라면+콜라',2800,'세트메뉴');
+insert into PRODUCT(name, price, kinds) values ('진라면+콜라',2800,'세트메뉴');
+insert into PRODUCT(name, price, kinds) values ('김치볶음밥+콜라',4200,'세트메뉴');
+insert into PRODUCT(name, price, kinds) values ('치킨마요덮밥+콜라',5000,'세트메뉴');
+commit ;
+
+
+
 create table PORDER(
                        id int not null primary key ,
                        product_id int not null references PRODUCT(id),
@@ -88,7 +108,13 @@ create table PORDER(
                        payment_date date not null
 );
 
+alter table PORDER modify request null;
+commit;
+
 select * from PORDER;
+delete PORDER;
+commit ;
+alter table PORDER add seat_id int not null references SEAT(id);
 
 create table SEAT(
     id int not null primary key ,

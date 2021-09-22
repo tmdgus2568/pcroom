@@ -7,11 +7,12 @@ public class PorderVO {
     private int product_id;
     private String customer_id;
     private String payment_way;
-    private char payment_status;
+    private String payment_status;
     private String request;
     private Date payment_date;
+    private int seat_id;
 
-    public PorderVO(int id, int product_id, String customer_id, String payment_way, char payment_status, String request, Date payment_date) {
+    public PorderVO(int id, int product_id, String customer_id, String payment_way, String payment_status, String request, Date payment_date, int seat_id) {
         this.id = id;
         this.product_id = product_id;
         this.customer_id = customer_id;
@@ -19,6 +20,18 @@ public class PorderVO {
         this.payment_status = payment_status;
         this.request = request;
         this.payment_date = payment_date;
+        this.seat_id = seat_id;
+    }
+
+    public PorderVO() {
+    }
+
+    public int getSeat_id() {
+        return seat_id;
+    }
+
+    public void setSeat_id(int seat_id) {
+        this.seat_id = seat_id;
     }
 
     public int getId() {
@@ -53,11 +66,11 @@ public class PorderVO {
         this.payment_way = payment_way;
     }
 
-    public char getPayment_status() {
+    public String getPayment_status() {
         return payment_status;
     }
 
-    public void setPayment_status(char payment_status) {
+    public void setPayment_status(String payment_status) {
         this.payment_status = payment_status;
     }
 
@@ -76,4 +89,6 @@ public class PorderVO {
     public void setPayment_date(Date payment_date) {
         this.payment_date = payment_date;
     }
+
+
 }

@@ -42,7 +42,7 @@ public class VisitDAO {
         }finally {
             DBUtil.dbClose(conn, st, null);
         }
-       
+
         return result;
     }
 }

@@ -1,4 +1,6 @@
-package com.hsh.pcroom_customer;
+package com.hsh.pcroom_customer.chargemachine;
+
+import com.hsh.pcroom_customer.*;
 
 import java.util.List;
 
@@ -17,4 +19,5 @@ public class ChargeMachineService {
     public CustomerVO selectCustomerById(String id){
         return customerDAO.selectCustomerById(id);
     }
+
 }

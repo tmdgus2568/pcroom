@@ -8,7 +8,7 @@ import java.sql.*;
 // String id, String password, String phone, String name, Date birthday, String address
 public class CustomerDAO {
 
-    public boolean insertCustomerDAO(CustomerVO customer){
+    public boolean insertCustomer(CustomerVO customer){
         boolean result = false;
         String sql = "INSERT into CUSTOMER(id,password,phone,name,birthday,address,join_date,remain_time,role) " +
                         "values(?,?,?,?,?,?,?,?,?)";

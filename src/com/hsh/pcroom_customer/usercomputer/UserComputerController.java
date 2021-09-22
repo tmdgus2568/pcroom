@@ -1,18 +1,19 @@
-package com.hsh.pcroom_customer;
+package com.hsh.pcroom_customer.usercomputer;
+
+import com.hsh.pcroom_customer.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 // 고객의 컴퓨터에서
 public class UserComputerController {
     static UserComputerService service = new UserComputerService();
     static int choiceSeatId = 0;
+    static List<ProductVO> cart = new ArrayList<>();
 
     public static void main(String[] args){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -75,6 +76,7 @@ public class UserComputerController {
 
             }catch (IOException | IllegalArgumentException e){
                 UserComputerView.display("잘못된 입력 형식입니다. 확인 후 다시 입력해 주세요.");
+                e.printStackTrace();
             }
 
 
@@ -101,6 +103,7 @@ public class UserComputerController {
 
             }catch (IOException e){
                 UserComputerView.display2("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                e.printStackTrace();
             }
         }
 
@@ -114,6 +117,7 @@ public class UserComputerController {
 
             }catch (IOException e){
                 UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                e.printStackTrace();
             }
         }
 
@@ -125,6 +129,7 @@ public class UserComputerController {
                 break;
             }catch (IOException e){
                 UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                e.printStackTrace();
             }
         }
 
@@ -137,6 +142,7 @@ public class UserComputerController {
                 break;
             }catch (IOException e){
                 UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                e.printStackTrace();
             }
 
         }
@@ -150,6 +156,7 @@ public class UserComputerController {
                 break;
             } catch (IOException | IllegalArgumentException e) {
                 UserComputerView.display("잘못된 형식입니다. 확인 후 다시 입력해 주세요.");
+                e.printStackTrace();
             }
         }
         while (true){
@@ -159,6 +166,7 @@ public class UserComputerController {
                 break;
             }catch (IOException e){
                 UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                e.printStackTrace();
             }
         }
 
@@ -260,6 +268,7 @@ public class UserComputerController {
         thread.start();
 
         CustomerVO updateCustomer = customer;
+        cart.clear();
         while(true){
             UserComputerView.display2("1.남은시간확인 / 2.음식주문 / 3.시스템종료 : ");
             try{
@@ -271,6 +280,7 @@ public class UserComputerController {
 
                         break;
                     case "2":
+                        orderMenu(customer.getId());
                         break;
                     case "3":
                         // 갱신된 남은 시간을 디비에 저장
@@ -295,11 +305,95 @@ public class UserComputerController {
                 }
             } catch (IOException e) {
                 UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                e.printStackTrace();
             }
 
         }
 
 
+
+    }
+
+    private static void orderMenu(String customer_id) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        UserComputerView.display("============주문할 음식의 종류를 선택해 주세요============");
+        while (true){
+            UserComputerView.display2("1.음료 / 2.라면 / 3.식사류 / 4.세트메뉴 / 5.장바구니 확인 및 구매 / 6.주문취소 : ");
+            try {
+                String ans = br.readLine();
+
+                switch (ans){
+                    case "1":
+                        addCartByKinds("음료");
+                        break;
+                    case "2":
+                        addCartByKinds("라면");
+                        break;
+                    case "3":
+                        addCartByKinds("식사류");
+                        break;
+                    case "4":
+                        addCartByKinds("세트메뉴");
+                        break;
+                    case "5":
+                        UserComputerView.display("==============장바구니 확인==============");
+                        UserComputerView.displayList(cart);
+                        int cart_sum = 0;
+                        for(ProductVO c:cart){
+                            cart_sum += c.getPrice();
+                        }
+                        UserComputerView.display("===============총 합계 : "+cart_sum+"원==============");
+                        UserComputerView.display2("정말 구입하시겠습니까?(구입 : Y) : ");
+                        String ans_buy = br.readLine();
+                        if(ans_buy.equals("Y") || ans_buy.equals("y")){
+                            String ans_way = "";
+                            while(true){
+                                UserComputerView.display2("결제방법을 선택해 주세요(카드/현금) : ");
+                                ans_way = br.readLine();
+                                if(ans_way.equals("카드") || ans_way.equals("현금")) break;
+                                else UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                            }
+
+                            UserComputerView.display2("요청사항을 입력해 주세요 : ");
+                            String ans_req = br.readLine();
+                            List<PorderVO> proders = new ArrayList<>();
+                            for(ProductVO product : cart){
+                                PorderVO porder = new PorderVO();
+                                porder.setPayment_way(ans_way);
+                                porder.setCustomer_id(customer_id);
+                                porder.setRequest(ans_req);
+                                porder.setProduct_id(product.getId());
+                                porder.setSeat_id(choiceSeatId);
+                                proders.add(porder);
+                            }
+
+                            int result = service.insertPorder(proders);
+                            if(result == cart.size()) UserComputerView.display("주문이 성공적으로 완료되었습니다!");
+                            else UserComputerView.display("주문에 실패하였습니다..");
+                            cart.clear();
+                            return;
+                        }
+                        else{
+                            UserComputerView.display("주문을 취소하였습니다.");
+                        }
+
+                        break;
+
+                    case "6":
+                        cart.clear();
+                        return;
+                    default:
+                        UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                        break;
+
+                }
+
+
+            } catch (IOException e) {
+                UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -331,6 +425,49 @@ public class UserComputerController {
         UserComputerView.display("시스템을 종료합니다. 안녕히 가세요(__)");
         service.updateSeat(id, "Y");
         System.exit(0);
+    }
+
+    // kinds에 따라 상품을 보여주고
+    // 장바구니에 추가하게끔 하는 함수
+    private static void addCartByKinds(String kinds){
+        List<ProductVO> products = service.selectProductByKinds(kinds);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+
+        if(products != null){
+            while(true){
+                UserComputerView.display("======================================");
+                UserComputerView.displayList(products);
+                UserComputerView.display("=================상품의 번호를 입력하시면 장바구니에 추가됩니다.================");
+                UserComputerView.display("================(뒤로가시려면 'Q'를 입력해 주세요)=================");
+                try {
+                    String ans = br.readLine();
+                    if(ans.equals("Q") || ans.equals("q")){
+                        return;
+                    }
+                    int ans_int = Integer.parseInt(ans);
+                    if(ans_int >= 1 && ans_int <= products.size()){
+                        ProductVO choiceProduct = products.get(ans_int-1);
+                        UserComputerView.display2(choiceProduct.getName() +
+                                "(" + choiceProduct.getPrice() + "원)을 장바구니에 추가하시겠습니까?(추가 : Y) : ");
+                        String ans_add = br.readLine();
+                        if(ans_add.equals("Y") || ans_add.equals("y")) {
+                            cart.add(choiceProduct);
+                            UserComputerView.display("장바구니에 추가되었습니다 !");
+                        }
+
+                    }
+                    else{
+                        UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                    }
+                } catch (IOException | NumberFormatException e) {
+                    UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
     }
 
 

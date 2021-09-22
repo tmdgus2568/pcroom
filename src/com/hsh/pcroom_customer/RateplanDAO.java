@@ -33,7 +33,10 @@ public class RateplanDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            DBUtil.dbClose(conn, st, rs);
         }
+
         return result;
     }
 

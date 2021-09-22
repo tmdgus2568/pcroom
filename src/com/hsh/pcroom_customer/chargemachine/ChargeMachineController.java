@@ -1,4 +1,7 @@
-package com.hsh.pcroom_customer;
+package com.hsh.pcroom_customer.chargemachine;
+
+import com.hsh.pcroom_customer.CustomerVO;
+import com.hsh.pcroom_customer.RateplanVO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
