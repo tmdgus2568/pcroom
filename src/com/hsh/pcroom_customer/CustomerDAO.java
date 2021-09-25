@@ -124,14 +124,16 @@ public class CustomerDAO {
             if(rs.next()){
                 result = makeCustomer(rs);
             }
+            else result = null;
 
         } catch (SQLException e) {
-            System.out.println("데이터베이스 오류가 발생하였습니다.");
+            e.printStackTrace();
         }finally {
             DBUtil.dbClose(conn, st, rs);
         }
         return result;
     }
+
 
 
     private CustomerVO makeCustomer(ResultSet rs) throws SQLException{

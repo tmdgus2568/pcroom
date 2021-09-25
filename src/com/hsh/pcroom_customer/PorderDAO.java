@@ -3,6 +3,7 @@ package com.hsh.pcroom_customer;
 import com.hsh.util.DBUtil;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PorderDAO {
@@ -52,15 +53,71 @@ public class PorderDAO {
         return 0;
     }
 
+    public List<PorderVO> selectPorderAllByStatus(String status){
+        Connection conn = DBUtil.dbConnect();
+        PreparedStatement st = null;
+        String sql = "select PORDER.*, PRODUCT.name product_name from porder " +
+                "inner join PRODUCT on PORDER.product_id=PRODUCT.id " +
+                "where PORDER.payment_status=?";
+        ResultSet rs = null;
+        List<PorderVO> porders = new ArrayList<>();
+        try {
+            st = conn.prepareStatement(sql);
+            st.setString(1,status);
+            rs = st.executeQuery();
+            while (rs.next()){
+                porders.add(makePorder(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DBUtil.dbClose(conn, st, rs);
+        }
+        return porders;
+
+    }
+
+    public boolean deletePorderById(int id){
+        Connection conn = DBUtil.dbConnect();
+        PreparedStatement st = null;
+        String sql = "delete from porder where id=?";
+        int result = 0;
+        try{
+            conn.setAutoCommit(false);
+            st = conn.prepareStatement(sql);
+            st.setInt(1,id);
+
+            result = st.executeUpdate();
+
+            if(result!=1){
+                conn.rollback();
+                return false;
+            }
+            conn.commit();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DBUtil.dbClose(conn, st, null);
+        }
+        return true;
+    }
+
     public PorderVO makePorder(ResultSet rs) throws SQLException {
         PorderVO porder = new PorderVO();
+
+
         porder.setId(rs.getInt("id"));
-        porder.setId(rs.getInt("prodcut_id"));
+        porder.setProduct_id(rs.getInt("product_id"));
         porder.setCustomer_id(rs.getString("customer_id"));
         porder.setPayment_way(rs.getString("payment_way"));
         porder.setPayment_status(rs.getString("payment_status"));
         porder.setRequest(rs.getString("request"));
         porder.setPayment_date(rs.getDate("payment_date"));
+        if(rs.getString("product_name") != null){
+            porder.setProduct_name(rs.getString("product_name"));
+        }
 
         return porder;
 

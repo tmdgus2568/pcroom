@@ -11,6 +11,7 @@ public class PorderVO {
     private String request;
     private Date payment_date;
     private int seat_id;
+    private String product_name;
 
     public PorderVO(int id, int product_id, String customer_id, String payment_way, String payment_status, String request, Date payment_date, int seat_id) {
         this.id = id;
@@ -32,6 +33,14 @@ public class PorderVO {
 
     public void setSeat_id(int seat_id) {
         this.seat_id = seat_id;
+    }
+
+    public String getProduct_name() {
+        return product_name;
+    }
+
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
     }
 
     public int getId() {
@@ -90,5 +99,14 @@ public class PorderVO {
         this.payment_date = payment_date;
     }
 
-
+    @Override
+    public String toString() {
+        return id + "\t" +
+                customer_id + "\t"+
+                product_name + "\t" +
+                payment_way + "\t" +
+                (request==null?"없음":request) + "\t" +
+                payment_date + "\t" +
+                seat_id;
+    }
 }

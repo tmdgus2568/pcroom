@@ -20,6 +20,7 @@ public class VisitVO {
     public VisitVO() {
     }
 
+
     public int getId() {
         return id;
     }

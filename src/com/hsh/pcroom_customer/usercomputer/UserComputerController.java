@@ -23,18 +23,16 @@ public class UserComputerController {
                 List<SeatVO> seats = showUsableSeats();
 
                 choiceSeatId = Integer.parseInt(br.readLine());
+
+                SeatVO choiceSeat = service.selectSeatById(choiceSeatId);
                 // return값이 1이면 원하는 1개 업데이트이므로
-                if(service.updateSeat(choiceSeatId, "N") == 1){
-                    if(seats.get(choiceSeatId-1).getIs_usable().equals("N")){
-                        UserComputerView.display("이미 사용중인 좌석입니다. 다시 선택해 주세요.");
-                    }
-                    else{
-                        UserComputerView.display("============" + choiceSeatId + "번 자리를 선택하였습니다." + "============");
-                    }
+                if(choiceSeat != null && choiceSeat.getIs_usable().equals("Y")){
+                    UserComputerView.display("============" + choiceSeatId + "번 자리를 선택하였습니다." + "============");
+                    service.updateSeat(choiceSeatId,"N",null);
 
                 }
                 else{
-                    UserComputerView.display("좌석 선택에 실패하였습니다. 다시 선택해 주세요.");
+                    UserComputerView.display("이미 사용중인 좌석입니다. 다시 선택해 주세요.");
                     continue;
                 }
 
@@ -60,6 +58,7 @@ public class UserComputerController {
 
                             // null이 아니다 -> 로그인이 됐다 !
                             if(customer != null){
+                                service.updateSeat(choiceSeatId,"N",customer.getId());
                                 afterSignIn(customer);
 
                             }
@@ -96,9 +95,17 @@ public class UserComputerController {
         // 아이디 입력
         while (true) {
             UserComputerView.display2("1. 아이디 : ");
+
             try{
                 id = br.readLine();
                 /* 중복 확인 해야됨 */
+                if(service.selectCustomerById(id) != null){
+                    UserComputerView.display("사용불가능한 아이디입니다. 다시 입력해 주세요.");
+                    continue;
+                }
+
+                else UserComputerView.display("사용가능한 아이디입니다 !");
+
                 break;
 
             }catch (IOException e){
@@ -109,10 +116,14 @@ public class UserComputerController {
 
         // 비밀번호 입력
         while (true) {
-            UserComputerView.display2("2. 비밀번호 : ");
+            UserComputerView.display2("2. 비밀번호(영문 또는 숫자만 사용가능) : ");
             try{
                 password = br.readLine();
                 /* 비밀번호 유효성 확인 해야됨 */
+                String pattern = "^[a-zA-Z0-9]*$";
+                if(!password.matches(pattern) || password.equals("")){
+                    UserComputerView.display("비밀번호 형식이 잘못되었습니다. 다시 입력해 주세요.");
+                }
                 break;
 
             }catch (IOException e){
@@ -139,6 +150,12 @@ public class UserComputerController {
             try{
                 phone = br.readLine();
                 /* 중복 확인 해야됨 */
+                String pattern = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$";
+                if(!phone.matches(pattern) || phone.equals("")){
+                    UserComputerView.display("핸드폰 번호 형식이 잘못되었습니다. 다시 입력해 주세요.");
+                    continue;
+                }
+
                 break;
             }catch (IOException e){
                 UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
@@ -152,7 +169,13 @@ public class UserComputerController {
         while (true) {
             UserComputerView.display2("5. 생년월일(예 : 1997-12-31) : ");
             try {
-                birthday = Date.valueOf(br.readLine());
+                String birthday_str = br.readLine();
+                String pattern = "^([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))$";
+                if(!birthday_str.matches(pattern) || birthday_str.equals("")){
+                    UserComputerView.display("생년월일 형식이 잘못되었습니다. 다시 입력해 주세요.");
+                    continue;
+                }
+                birthday = Date.valueOf(birthday_str);
                 break;
             } catch (IOException | IllegalArgumentException e) {
                 UserComputerView.display("잘못된 형식입니다. 확인 후 다시 입력해 주세요.");
@@ -423,7 +446,7 @@ public class UserComputerController {
 
     private static void exit(int id){
         UserComputerView.display("시스템을 종료합니다. 안녕히 가세요(__)");
-        service.updateSeat(id, "Y");
+        service.updateSeat(id, "Y", null);
         System.exit(0);
     }
 

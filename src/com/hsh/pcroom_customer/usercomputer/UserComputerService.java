@@ -23,8 +23,12 @@ public class UserComputerService {
         return seatDAO.selectSeatAll();
     }
 
-    public int updateSeat(int id, String is_usable){
-        return seatDAO.updateSeat(id, is_usable);
+    public SeatVO selectSeatById(int id){
+        return seatDAO.selectSeatById(id);
+    }
+
+    public int updateSeat(int id, String is_usable, String customer_id){
+        return seatDAO.updateSeat(id, is_usable, customer_id);
     }
 
     public int updateCustomerRemainTime(CustomerVO customer){
@@ -42,6 +46,11 @@ public class UserComputerService {
     public List<ProductVO> selectProductByKinds(String kinds){
         return productDAO.selectProductByKinds(kinds);
     }
+
+    public CustomerVO selectCustomerById(String id){
+        return customerDAO.selectCustomerById(id);
+    }
+
 
 
 }

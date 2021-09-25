@@ -111,8 +111,11 @@ create table PORDER(
 alter table PORDER modify request null;
 commit;
 
+select PORDER.*,PRODUCT.name product_name from porder inner join PRODUCT on PORDER.product_id = PRODUCT.id
+where PORDER.payment_status='N';
+
 select * from PORDER;
-delete PORDER;
+delete PORDER where id=;
 commit ;
 alter table PORDER add seat_id int not null references SEAT(id);
 
@@ -134,6 +137,9 @@ commit;
 
 update SEAT set is_usable='Y';
 commit ;
+alter table seat add customer_id varchar2(30) references CUSTOMER(id);
+
+select  * from SEAT;
 
 
 create table VISIT(
