@@ -40,8 +40,8 @@ public class SeatVO {
 
     @Override
     public String toString() {
-        return id + "번좌석 \t\t" + (is_usable.equals("N")?"사용중":"빈좌석") + "\t\t" +
-                (customer_id!=null?customer_id:"");
+        return "좌석번호: "+id + " / 사용가능여부: "+(is_usable.equals("N")?"사용중":"빈좌석") +
+                " / 아이디: "+(customer_id!=null?customer_id:"");
 
     }
 }

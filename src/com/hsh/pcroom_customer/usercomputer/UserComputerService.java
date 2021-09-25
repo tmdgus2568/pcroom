@@ -39,8 +39,8 @@ public class UserComputerService {
         return visitDAO.insertVisit(visit);
     }
 
-    public int insertPorder(List<PorderVO> porders){
-        return porderDAO.insertPorder(porders);
+    public int insertPorder(PorderVO porder, List<PorderdetailVO> porderdetails){
+        return porderDAO.insertPorder(porder, porderdetails);
     }
 
     public List<ProductVO> selectProductByKinds(String kinds){

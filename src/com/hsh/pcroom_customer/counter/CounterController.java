@@ -1,7 +1,9 @@
 package com.hsh.pcroom_customer.counter;
 
+import com.hsh.pcroom_customer.Checkporder;
 import com.hsh.pcroom_customer.PorderVO;
 import com.hsh.pcroom_customer.SeatVO;
+import com.hsh.pcroom_customer.VisitVO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +21,7 @@ public class CounterController {
 
         while(true){
             CounterView.display("=============메뉴를 선택해 주세요============");
-            CounterView.display2("1.좌석현황 / 2.주문확인 / 3.회원정보수정 / 4.방문기록확인 / 5.종료하기 : ");
+            CounterView.display2("1.좌석현황 / 2.주문확인 / 3.방문기록확인 / 4.종료하기 : ");
 
             try {
                 String ans_menu = br.readLine();
@@ -33,8 +35,9 @@ public class CounterController {
                             showOrders();
                             break;
                         case "3":
+                            showVisits();
+                            break;
                         case "4":
-                        case "5":
                             CounterView.display("시스템을 종료합니다. 안녕히 가세요(__)");
                             System.exit(0);
                         default:
@@ -55,11 +58,11 @@ public class CounterController {
 
     public static void showSeats(){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        CounterView.display("=================좌석현황=================");
-        CounterView.display("좌석번호\t\t사용가능여부\t\t아이디");
+        CounterView.display("\n[좌석현황]");
         CounterView.display("------------------------------------------");
         List<SeatVO> seats = service.selectSeatAll();
         CounterView.displayList(seats);
+        CounterView.display("------------------------------------------\n");
         while(true){
             CounterView.display2("1.뒤로가기 / 2.새로고침 : ");
             try {
@@ -68,11 +71,11 @@ public class CounterController {
                     return;
                 }
                 if(ans.equals("2")){
-                    CounterView.display("=================좌석현황=================");
-                    CounterView.display("좌석번호\t\t사용가능여부\t\t아이디");
-                    CounterView.display("----------------------------");
+                    CounterView.display("\n[좌석현황]");
+                    CounterView.display("------------------------------------------");
                     seats = service.selectSeatAll();
                     CounterView.displayList(seats);
+                    CounterView.display("------------------------------------------\n");
                 }
                 else{
                     CounterView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
@@ -91,11 +94,27 @@ public class CounterController {
 
     public static void showOrders(){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        CounterView.display("=======================주문확인=======================");
-        CounterView.display("주문번호\t아이디\t음식이름\t결제방식\t요청사항\t주문날짜\t자리번호");
-        CounterView.display("----------------------------------------------------");
-        List<PorderVO> porders = service.selectPorderAllByStatus("N");
-        CounterView.displayList(porders);
+        CounterView.display("\n[주문확인]");
+
+        List<Checkporder> checkporders = service.selectPorderAllByStatus("N");
+
+        int prev_id = 0;
+
+        for(Checkporder c:checkporders){
+            if(prev_id != c.getPorder_id()){
+                if(prev_id!=0){
+                    CounterView.display("\n===============================================");
+                }
+                CounterView.display("\n===============================================");
+                CounterView.display("주문번호: "+c.getPorder_id() + "\n회원아이디: "+c.getCustomer_id()+
+                        "\n자리번호: "+c.getSeat_id() +"\n주문날짜: "+c.getPayment_date()+"\n결제방법: "+c.getPayment_way()+
+                        "\n요청사항: "+c.getRequest() + "\n총가격: "+c.getPrice_sum());
+                CounterView.display("--------------------------------------------------");
+            }
+            CounterView.display(c.toString());
+            prev_id = c.getPorder_id();
+        }
+        CounterView.display("===============================================\n");
 
         while(true){
             CounterView.display2("1.뒤로가기 / 2.새로고침 / 3.결제완료처리 : ");
@@ -105,22 +124,37 @@ public class CounterController {
                     return;
                 }
                 else if(ans.equals("2")){
-                    CounterView.display("=======================주문확인=========================");
-                    CounterView.display("주문번호\t아이디\t음식이름\t결제방식\t요청사항\t주문날짜\t자리번호");
-                    CounterView.display("----------------------------------------------------");
+                    CounterView.display("\n[주문확인]");
 
-                    porders = service.selectPorderAllByStatus("N");
-                    CounterView.displayList(porders);
+                    checkporders = service.selectPorderAllByStatus("N");
+
+                    prev_id = 0;
+
+                    for(Checkporder c:checkporders){
+                        if(prev_id != c.getPorder_id()){
+                            if(prev_id!=0){
+                                CounterView.display("\n===============================================");
+                            }
+                            CounterView.display("\n===============================================");
+                            CounterView.display("주문번호: "+c.getPorder_id() + "\n회원아이디: "+c.getCustomer_id()+
+                                    "\n자리번호: "+c.getSeat_id() +"\n주문날짜: "+c.getPayment_date()+"\n결제방법: "+c.getPayment_way()+
+                                    "\n요청사항: "+c.getRequest() + "\n총가격: "+c.getPrice_sum());
+                            CounterView.display("--------------------------------------------------");
+                        }
+                        CounterView.display(c.toString());
+                        prev_id = c.getPorder_id();
+                    }
+                    CounterView.display("===============================================\n");
                 }
                 else if(ans.equals("3")){
                     CounterView.display2("결제완료처리할 주문번호를 선택해 주세요 : ");
                     String ans_ordernum = br.readLine();
                     String pattern = "^[0-9]*$";
-                    PorderVO choicePorder = null;
+                    Checkporder choicePorder = null;
                     if(ans_ordernum.matches(pattern)){
-                        for(PorderVO porder:porders){
-                            if(porder.getId()==Integer.parseInt(ans_ordernum)){
-                                choicePorder = porder;
+                        for(Checkporder checkporder:checkporders){
+                            if(checkporder.getPorder_id()==Integer.parseInt(ans_ordernum)){
+                                choicePorder = checkporder;
                                 break;
                             }
                         }
@@ -135,7 +169,7 @@ public class CounterController {
 
                     }
                     else{
-                        if(service.deletePorderById(Integer.parseInt(ans_ordernum))){
+                        if(service.updatePorderById(Integer.parseInt(ans_ordernum))){
                             CounterView.display("처리가 완료되었습니다.");
                         }
                         else{
@@ -154,5 +188,34 @@ public class CounterController {
         }
 
 
+    }
+
+    public static void showVisits() {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        CounterView.display("\n[방문기록확인]");
+        CounterView.display("------------------------------------------");
+        List<VisitVO> visits = service.selectVisitAll();
+        CounterView.displayList(visits);
+        CounterView.display("------------------------------------------\n");
+        while (true) {
+            CounterView.display2("1.뒤로가기 / 2.새로고침 : ");
+            try {
+                String ans = br.readLine();
+                if (ans.equals("1")) {
+                    return;
+                } else if (ans.equals("2")) {
+                    CounterView.display("\n[방문기록확인]");
+                    CounterView.display("------------------------------------------");
+                    visits = service.selectVisitAll();
+                    CounterView.displayList(visits);
+                    CounterView.display("------------------------------------------\n");
+                } else {
+                    CounterView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }

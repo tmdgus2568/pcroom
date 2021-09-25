@@ -60,4 +60,10 @@ public class VisitVO {
     public void setExit_date(Date exit_date) {
         this.exit_date = exit_date;
     }
+
+    @Override
+    public String toString() {
+        return "번호: "+id+" / 아이디: "+customer_id+" / 좌석번호: "+seat_id+
+                (visit_date!=null?" / 방문날짜: "+visit_date:"") + (exit_date!=null?" / 종료날짜: "+exit_date:"");
+    }
 }

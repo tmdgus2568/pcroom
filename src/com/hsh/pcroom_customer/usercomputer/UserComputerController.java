@@ -13,7 +13,7 @@ import java.util.List;
 public class UserComputerController {
     static UserComputerService service = new UserComputerService();
     static int choiceSeatId = 0;
-    static List<ProductVO> cart = new ArrayList<>();
+    static List<PorderdetailVO> cart = new ArrayList<>();
 
     public static void main(String[] args){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -362,8 +362,8 @@ public class UserComputerController {
                         UserComputerView.display("==============장바구니 확인==============");
                         UserComputerView.displayList(cart);
                         int cart_sum = 0;
-                        for(ProductVO c:cart){
-                            cart_sum += c.getPrice();
+                        for(PorderdetailVO p:cart){
+                            cart_sum += p.getPrice() * p.getNum();
                         }
                         UserComputerView.display("===============총 합계 : "+cart_sum+"원==============");
                         UserComputerView.display2("정말 구입하시겠습니까?(구입 : Y) : ");
@@ -379,18 +379,15 @@ public class UserComputerController {
 
                             UserComputerView.display2("요청사항을 입력해 주세요 : ");
                             String ans_req = br.readLine();
-                            List<PorderVO> proders = new ArrayList<>();
-                            for(ProductVO product : cart){
-                                PorderVO porder = new PorderVO();
-                                porder.setPayment_way(ans_way);
-                                porder.setCustomer_id(customer_id);
-                                porder.setRequest(ans_req);
-                                porder.setProduct_id(product.getId());
-                                porder.setSeat_id(choiceSeatId);
-                                proders.add(porder);
-                            }
-
-                            int result = service.insertPorder(proders);
+                            PorderVO porder = new PorderVO();
+                            porder.setPayment_way(ans_way);
+                            porder.setCustomer_id(customer_id);
+                            porder.setRequest(ans_req);
+                            porder.setSeat_id(choiceSeatId);
+                            porder.setPrice_sum(cart_sum);
+//
+//                            insertPorder(PorderVO porder, List<Integer> product_ids, List<Integer> product_nums)
+                            int result = service.insertPorder(porder, cart);
                             if(result == cart.size()) UserComputerView.display("주문이 성공적으로 완료되었습니다!");
                             else UserComputerView.display("주문에 실패하였습니다..");
                             cart.clear();
@@ -470,12 +467,31 @@ public class UserComputerController {
                     }
                     int ans_int = Integer.parseInt(ans);
                     if(ans_int >= 1 && ans_int <= products.size()){
+                        PorderdetailVO porderdetail = new PorderdetailVO();
+
                         ProductVO choiceProduct = products.get(ans_int-1);
+
+                        porderdetail.setProduct_id(choiceProduct.getId());
+                        porderdetail.setPrice(choiceProduct.getPrice());
+                        porderdetail.setName(choiceProduct.getName());
+
                         UserComputerView.display2(choiceProduct.getName() +
                                 "(" + choiceProduct.getPrice() + "원)을 장바구니에 추가하시겠습니까?(추가 : Y) : ");
                         String ans_add = br.readLine();
                         if(ans_add.equals("Y") || ans_add.equals("y")) {
-                            cart.add(choiceProduct);
+                            while (true){
+                                String pattern = "^[0-9]*$";
+                                UserComputerView.display2("수량을 입력해 주세요 : ");
+                                String product_num = br.readLine();
+                                if(product_num.matches(pattern)){
+                                    porderdetail.setNum(Integer.parseInt(product_num));
+                                    break;
+                                }
+                                UserComputerView.display("잘못 입력하셨습니다. 다시 입력해 주세요.");
+
+                            }
+
+                            cart.add(porderdetail);
                             UserComputerView.display("장바구니에 추가되었습니다 !");
                         }
 

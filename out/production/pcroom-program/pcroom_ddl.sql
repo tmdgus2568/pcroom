@@ -96,7 +96,7 @@ insert into PRODUCT(name, price, kinds) values ('김치볶음밥+콜라',4200,'�
 insert into PRODUCT(name, price, kinds) values ('치킨마요덮밥+콜라',5000,'세트메뉴');
 commit ;
 
-
+alter table PORDER drop column product_id;
 
 create table PORDER(
                        id int not null primary key ,
@@ -111,7 +111,8 @@ create table PORDER(
 alter table PORDER modify request null;
 commit;
 
-select PORDER.*,PRODUCT.name product_name from porder inner join PRODUCT on PORDER.product_id = PRODUCT.id
+select PORDER.*,PORDER_DETAIL.*
+from porder inner join PORDER_DETAIL on PORDER.id = PORDER_DETAIL.porder_id
 where PORDER.payment_status='N';
 
 select * from PORDER;
@@ -157,5 +158,24 @@ insert into visit(customer_id, seat_id, exit_date)
 values('morphing25',5,sysdate);
 
 
+drop table PORDER_DETAIL;
+create table PORDER_DETAIL(
+                      porder_id int not null references PORDER(id),
+                      product_id int not null references PRODUCT(id),
+                      num int default 1 not null,
+                      constraint pk primary key(porder_id, product_id)
+
+);
+select * from PORDER_DETAIL;
+alter table PORDER_DETAIL add price int not null;
+alter table PORDER_DETAIL add name varchar2(30) not null;
+
+select * from PORDER;
+
+delete from PORDER_DETAIL;
+delete from PORDER;
+
+
+alter table PORDER add price_sum int not null;
 
 
