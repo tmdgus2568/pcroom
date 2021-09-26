@@ -16,6 +16,7 @@ public class UserComputerController {
     static List<PorderdetailVO> cart = new ArrayList<>();
 
     public static void main(String[] args){
+        UserComputerView.displayNotice("컴퓨터에 접속하였습니다!");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while(true){
             choiceSeatId = 0;
@@ -27,25 +28,23 @@ public class UserComputerController {
                 SeatVO choiceSeat = service.selectSeatById(choiceSeatId);
                 // return값이 1이면 원하는 1개 업데이트이므로
                 if(choiceSeat != null && choiceSeat.getIs_usable().equals("Y")){
-                    UserComputerView.display("============" + choiceSeatId + "번 자리를 선택하였습니다." + "============");
+                    UserComputerView.displayNotice( choiceSeatId + "번 자리를 선택하였습니다.");
                     service.updateSeat(choiceSeatId,"N",null);
 
                 }
                 else{
-                    UserComputerView.display("이미 사용중인 좌석입니다. 다시 선택해 주세요.");
+                    UserComputerView.displayNotice("이미 사용중인 좌석입니다. 다시 선택해 주세요.");
                     continue;
                 }
 
 
                 while (true){
-                    UserComputerView.display("==========숫자를 선택해 주세요===========");
-                    UserComputerView.display(" 1.회원가입 / 2.로그인 / 3.시스템종료");
-                    UserComputerView.display("====================================");
+                    UserComputerView.display2("1.회원가입 / 2.로그인 / 3.시스템종료 : ");
                     String selectNum = br.readLine();
 
                     switch (selectNum){
                         case "1":
-                            UserComputerView.display("==========회원 정보를 입력해주세요===========\"");
+                            UserComputerView.display("============회원 정보를 입력해주세요===========\"");
                             signUp(); break;
                         case "2":
                             UserComputerView.display2("아이디 : ");
@@ -68,13 +67,13 @@ public class UserComputerController {
                             exit(choiceSeatId);
                             return;
                         default:
-                            UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                            UserComputerView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                             break;
                     }
                 }
 
             }catch (IOException | IllegalArgumentException e){
-                UserComputerView.display("잘못된 입력 형식입니다. 확인 후 다시 입력해 주세요.");
+                UserComputerView.displayNotice("잘못된 입력 형식입니다. 확인 후 다시 입력해 주세요.");
                 e.printStackTrace();
             }
 
@@ -100,16 +99,16 @@ public class UserComputerController {
                 id = br.readLine();
                 /* 중복 확인 해야됨 */
                 if(service.selectCustomerById(id) != null){
-                    UserComputerView.display("사용불가능한 아이디입니다. 다시 입력해 주세요.");
+                    UserComputerView.displayNotice("사용불가능한 아이디입니다. 다시 입력해 주세요.");
                     continue;
                 }
 
-                else UserComputerView.display("사용가능한 아이디입니다 !");
+                else UserComputerView.displayNotice("사용가능한 아이디입니다 !");
 
                 break;
 
             }catch (IOException e){
-                UserComputerView.display2("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                UserComputerView.displayNotice("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
                 e.printStackTrace();
             }
         }
@@ -122,12 +121,12 @@ public class UserComputerController {
                 /* 비밀번호 유효성 확인 해야됨 */
                 String pattern = "^[a-zA-Z0-9]*$";
                 if(!password.matches(pattern) || password.equals("")){
-                    UserComputerView.display("비밀번호 형식이 잘못되었습니다. 다시 입력해 주세요.");
+                    UserComputerView.displayNotice("비밀번호 형식이 잘못되었습니다. 다시 입력해 주세요.");
                 }
                 break;
 
             }catch (IOException e){
-                UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                UserComputerView.displayNotice("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
                 e.printStackTrace();
             }
         }
@@ -139,7 +138,7 @@ public class UserComputerController {
                 name = br.readLine();
                 break;
             }catch (IOException e){
-                UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                UserComputerView.displayNotice("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
                 e.printStackTrace();
             }
         }
@@ -158,7 +157,7 @@ public class UserComputerController {
 
                 break;
             }catch (IOException e){
-                UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                UserComputerView.displayNotice("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
                 e.printStackTrace();
             }
 
@@ -172,13 +171,13 @@ public class UserComputerController {
                 String birthday_str = br.readLine();
                 String pattern = "^([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))$";
                 if(!birthday_str.matches(pattern) || birthday_str.equals("")){
-                    UserComputerView.display("생년월일 형식이 잘못되었습니다. 다시 입력해 주세요.");
+                    UserComputerView.displayNotice("생년월일 형식이 잘못되었습니다. 다시 입력해 주세요.");
                     continue;
                 }
                 birthday = Date.valueOf(birthday_str);
                 break;
             } catch (IOException | IllegalArgumentException e) {
-                UserComputerView.display("잘못된 형식입니다. 확인 후 다시 입력해 주세요.");
+                UserComputerView.displayNotice("잘못된 형식입니다. 확인 후 다시 입력해 주세요.");
                 e.printStackTrace();
             }
         }
@@ -188,7 +187,7 @@ public class UserComputerController {
                 address = br.readLine();
                 break;
             }catch (IOException e){
-                UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                UserComputerView.displayNotice("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
                 e.printStackTrace();
             }
         }
@@ -204,10 +203,10 @@ public class UserComputerController {
         // false여야 성공한 것이다.
 
         if(!service.insertCustomer(newCustomer)){
-            UserComputerView.display("회원가입이 완료되었습니다.");
+            UserComputerView.displayNotice("회원가입이 완료되었습니다.");
         }
         else{
-            UserComputerView.display("회원가입에 실패하였습니다. 다시 시도해 주세요.");
+            UserComputerView.displayNotice("회원가입에 실패하였습니다. 다시 시도해 주세요.");
         }
     }
 
@@ -216,16 +215,16 @@ public class UserComputerController {
         CustomerVO customer = service.selectByIdPassword(id, pw);
         if(customer != null){
             if(customer.getRemain_time() == 0){
-                UserComputerView.display("남아있는 시간이 없습니다. 요금 충전 후, 다시 로그인 해주세요.");
+                UserComputerView.displayNotice("남아있는 시간이 없습니다. 요금 충전 후, 다시 로그인 해주세요.");
             }
             else{
-                UserComputerView.display("로그인에 성공하였습니다");
+                UserComputerView.displayNotice("로그인에 성공하였습니다");
                 return customer;
                 //
             }
         }
         else{
-            UserComputerView.display("로그인에 실패하였습니다. 확인 후 다시 로그인 해주세요.");
+            UserComputerView.displayNotice("로그인에 실패하였습니다. 확인 후 다시 로그인 해주세요.");
         }
         return null;
     }
@@ -243,14 +242,14 @@ public class UserComputerController {
             try {
                 sleep(time);
                 updateCustomer.setRemain_time(0);
-                UserComputerView.display("\n시간이 모두 소모되었습니다.");
+                UserComputerView.displayNotice("\n시간이 모두 소모되었습니다.");
 
                 int result = service.updateCustomerRemainTime(updateCustomer);
                 if(result == 1){
                     exit(choiceSeatId);
                 }
                 else{
-                    UserComputerView.display("시스템 종료 오류가 발생하였습니다.");
+                    UserComputerView.displayNotice("시스템 종료 오류가 발생하였습니다.");
                 }
 
             } catch (InterruptedException e) {
@@ -299,7 +298,7 @@ public class UserComputerController {
                 switch (answer){
                     case "1":
                         // 종료될시간 - 현재시간
-                        UserComputerView.display(millisToFormat(remain_time - (System.currentTimeMillis()-now_time)));
+                        UserComputerView.displayNotice(millisToFormat(remain_time - (System.currentTimeMillis()-now_time)));
 
                         break;
                     case "2":
@@ -319,15 +318,15 @@ public class UserComputerController {
                             exit(choiceSeatId);
                         }
                         else{
-                            UserComputerView.display("시스템 종료 오류가 발생하였습니다.");
+                            UserComputerView.displayNotice("시스템 종료 오류가 발생하였습니다.");
                         }
                         break;
                     default:
-                        UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                        UserComputerView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                         break;
                 }
             } catch (IOException e) {
-                UserComputerView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                UserComputerView.displayNotice("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
                 e.printStackTrace();
             }
 
@@ -339,7 +338,6 @@ public class UserComputerController {
 
     private static void orderMenu(String customer_id) {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        UserComputerView.display("============주문할 음식의 종류를 선택해 주세요============");
         while (true){
             UserComputerView.display2("1.음료 / 2.라면 / 3.식사류 / 4.세트메뉴 / 5.장바구니 확인 및 구매 / 6.주문취소 : ");
             try {
@@ -374,7 +372,7 @@ public class UserComputerController {
                                 UserComputerView.display2("결제방법을 선택해 주세요(카드/현금) : ");
                                 ans_way = br.readLine();
                                 if(ans_way.equals("카드") || ans_way.equals("현금")) break;
-                                else UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                                else UserComputerView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                             }
 
                             UserComputerView.display2("요청사항을 입력해 주세요 : ");
@@ -388,13 +386,13 @@ public class UserComputerController {
 //
 //                            insertPorder(PorderVO porder, List<Integer> product_ids, List<Integer> product_nums)
                             int result = service.insertPorder(porder, cart);
-                            if(result == cart.size()) UserComputerView.display("주문이 성공적으로 완료되었습니다!");
-                            else UserComputerView.display("주문에 실패하였습니다..");
+                            if(result == cart.size()) UserComputerView.displayNotice("주문이 성공적으로 완료되었습니다!");
+                            else UserComputerView.displayNotice("주문에 실패하였습니다..");
                             cart.clear();
                             return;
                         }
                         else{
-                            UserComputerView.display("주문을 취소하였습니다.");
+                            UserComputerView.displayNotice("주문을 취소하였습니다.");
                         }
 
                         break;
@@ -403,14 +401,14 @@ public class UserComputerController {
                         cart.clear();
                         return;
                     default:
-                        UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                        UserComputerView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                         break;
 
                 }
 
 
             } catch (IOException e) {
-                UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                UserComputerView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                 e.printStackTrace();
             }
         }
@@ -437,12 +435,12 @@ public class UserComputerController {
 
             UserComputerView.display2(show);
         }
-        UserComputerView.display("\n====================================");
+        UserComputerView.display("\n===========================================");
         return seats;
     }
 
     private static void exit(int id){
-        UserComputerView.display("시스템을 종료합니다. 안녕히 가세요(__)");
+        UserComputerView.displayNotice("시스템을 종료합니다. 안녕히 가세요(__)");
         service.updateSeat(id, "Y", null);
         System.exit(0);
     }
@@ -456,10 +454,11 @@ public class UserComputerController {
 
         if(products != null){
             while(true){
-                UserComputerView.display("======================================");
+                UserComputerView.display("================="+kinds+" 상품목록==================");
                 UserComputerView.displayList(products);
-                UserComputerView.display("=================상품의 번호를 입력하시면 장바구니에 추가됩니다.================");
-                UserComputerView.display("================(뒤로가시려면 'Q'를 입력해 주세요)=================");
+                UserComputerView.display("===============================================");
+                UserComputerView.display2("상품의 번호를 입력하시면 장바구니에 추가됩니다 (뒤로가기 : Q) : ");
+
                 try {
                     String ans = br.readLine();
                     if(ans.equals("Q") || ans.equals("q")){
@@ -487,20 +486,20 @@ public class UserComputerController {
                                     porderdetail.setNum(Integer.parseInt(product_num));
                                     break;
                                 }
-                                UserComputerView.display("잘못 입력하셨습니다. 다시 입력해 주세요.");
+                                UserComputerView.displayNotice("잘못 입력하셨습니다. 다시 입력해 주세요.");
 
                             }
 
                             cart.add(porderdetail);
-                            UserComputerView.display("장바구니에 추가되었습니다 !");
+                            UserComputerView.displayNotice("장바구니에 추가되었습니다 !");
                         }
 
                     }
                     else{
-                        UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                        UserComputerView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                     }
                 } catch (IOException | NumberFormatException e) {
-                    UserComputerView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                    UserComputerView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                     e.printStackTrace();
                 }
             }

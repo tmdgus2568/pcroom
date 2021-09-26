@@ -137,6 +137,7 @@ insert into SEAT values (6,'Y');
 commit;
 
 update SEAT set is_usable='Y';
+update SEAT set customer_id=null;
 commit ;
 alter table seat add customer_id varchar2(30) references CUSTOMER(id);
 
@@ -178,4 +179,5 @@ delete from PORDER;
 
 alter table PORDER add price_sum int not null;
 
+select * from cols;
 

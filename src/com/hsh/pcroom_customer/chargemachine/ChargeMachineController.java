@@ -2,6 +2,7 @@ package com.hsh.pcroom_customer.chargemachine;
 
 import com.hsh.pcroom_customer.CustomerVO;
 import com.hsh.pcroom_customer.RateplanVO;
+import com.hsh.pcroom_customer.counter.CounterView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,12 +13,12 @@ import java.util.List;
 public class ChargeMachineController {
     static ChargeMachineService service = new ChargeMachineService();
     public static void main(String[] args) {
-        System.out.println(System.currentTimeMillis());
+        ChargeMachineView.displayNotice("요금 충전 기기에 접속하였습니다!");
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         List<RateplanVO> rateplans;
         while(true){
-            ChargeMachineView.display2("1.회원 / 2.비회원  ");
+            ChargeMachineView.display2("1.회원 / 2.비회원 / 3.종료하기 : ");
             try{
                 String role = br.readLine();
                 switch (role){
@@ -34,24 +35,24 @@ public class ChargeMachineController {
                         String customerId = br.readLine();
                         CustomerVO customer = null;
                         while ((customer = service.selectCustomerById(customerId))==null){
-                            System.out.println("유효하지 않은 아이디 입니다. 다시 입력해 주세요.");
+                            ChargeMachineView.displayNotice("유효하지 않은 아이디 입니다. 다시 입력해 주세요.");
                             ChargeMachineView.display2("충전할 아이디 : ");
                             customerId = br.readLine();
                         }
-                        ChargeMachineView.display("# 남은시간 : "+customer.getRemain_time() + "분");
+                        ChargeMachineView.displayNotice2("남은시간 : "+customer.getRemain_time() + "분");
 
                         RateplanVO choiceRateplan = rateplans.get(choiceRateplanNum-1);
-                        ChargeMachineView.display2("선택한 요금제는 '"+choiceRateplan.getId()+
-                                                    " ("+choiceRateplan.getPrice()+"원)'"+" 입니다.\n" +
-                                                        "결제를 진행하시겠습니까? (Y/N) ");
+                        ChargeMachineView.displayNotice2("선택한 요금제는 '"+choiceRateplan.getId()+
+                                                    " ("+choiceRateplan.getPrice()+"원)'"+" 입니다.\n");
+                        ChargeMachineView.display2("결제를 진행하시겠습니까? (Y/N) : ");
                         String answer = br.readLine();
                         if(answer.equals("Y") || answer.equals("y")){
                             int result = service.updateCustomerForBuyTime(customer.getId(),choiceRateplan.getApply_time(),choiceRateplan.getId());
                             if(result == 1){
-                                ChargeMachineView.display("충전이 완료되었습니다.");
+                                ChargeMachineView.displayNotice("충전이 완료되었습니다.");
                             }
                             else{
-                                ChargeMachineView.display("충전에 실패하였습니다.");
+                                ChargeMachineView.displayNotice("충전에 실패하였습니다.");
                             }
                         }
                         else if(answer.equals("N") || answer.equals("n")){
@@ -62,12 +63,15 @@ public class ChargeMachineController {
                         break;
                     case "2":
                         break;
+                    case "3":
+                        CounterView.displayNotice("시스템을 종료합니다. 안녕히 가세요(__)");
+                        System.exit(0);
                     default:
-                        ChargeMachineView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                        ChargeMachineView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                         break;
                 }
             }catch (IOException | IllegalArgumentException e){
-                ChargeMachineView.display("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                ChargeMachineView.displayNotice("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
             }
 
         }

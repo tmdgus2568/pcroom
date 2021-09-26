@@ -17,10 +17,11 @@ public class CounterController {
     static CounterService service = new CounterService();
 
     public static void main(String[] args) {
+        CounterView.displayNotice("카운터 프로그램에 접속하였습니다!");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         while(true){
-            CounterView.display("=============메뉴를 선택해 주세요============");
+
             CounterView.display2("1.좌석현황 / 2.주문확인 / 3.방문기록확인 / 4.종료하기 : ");
 
             try {
@@ -38,13 +39,13 @@ public class CounterController {
                             showVisits();
                             break;
                         case "4":
-                            CounterView.display("시스템을 종료합니다. 안녕히 가세요(__)");
+                            CounterView.displayNotice("시스템을 종료합니다. 안녕히 가세요(__)");
                             System.exit(0);
                         default:
                     }
                 }
                 else{
-                    CounterView.display("잘못 입력하셨습니다. 다시 입력해 주세요 !");
+                    CounterView.displayNotice("잘못 입력하셨습니다. 다시 입력해 주세요 !");
                     continue;
                 }
 
@@ -108,7 +109,7 @@ public class CounterController {
                 CounterView.display("\n===============================================");
                 CounterView.display("주문번호: "+c.getPorder_id() + "\n회원아이디: "+c.getCustomer_id()+
                         "\n자리번호: "+c.getSeat_id() +"\n주문날짜: "+c.getPayment_date()+"\n결제방법: "+c.getPayment_way()+
-                        "\n요청사항: "+c.getRequest() + "\n총가격: "+c.getPrice_sum());
+                        "\n요청사항: "+(c.getRequest()==null?"없음":c.getRequest()) + "\n총가격: "+c.getPrice_sum());
                 CounterView.display("--------------------------------------------------");
             }
             CounterView.display(c.toString());
@@ -138,7 +139,7 @@ public class CounterController {
                             CounterView.display("\n===============================================");
                             CounterView.display("주문번호: "+c.getPorder_id() + "\n회원아이디: "+c.getCustomer_id()+
                                     "\n자리번호: "+c.getSeat_id() +"\n주문날짜: "+c.getPayment_date()+"\n결제방법: "+c.getPayment_way()+
-                                    "\n요청사항: "+c.getRequest() + "\n총가격: "+c.getPrice_sum());
+                                    "\n요청사항: "+(c.getRequest()==null?"없음":c.getRequest()) + "\n총가격: "+c.getPrice_sum());
                             CounterView.display("--------------------------------------------------");
                         }
                         CounterView.display(c.toString());
@@ -159,30 +160,32 @@ public class CounterController {
                             }
                         }
                     }
+
                     else{
-                        CounterView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                        CounterView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                        System.out.println(choicePorder.getPorder_id());
                         continue;
                     }
 
                     if(choicePorder == null){
-                        CounterView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                        CounterView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
 
                     }
                     else{
                         if(service.updatePorderById(Integer.parseInt(ans_ordernum))){
-                            CounterView.display("처리가 완료되었습니다.");
+                            CounterView.displayNotice("처리가 완료되었습니다.");
                         }
                         else{
-                            CounterView.display("처리를 실패하였습니다. 다시 시도해 주세요.");
+                            CounterView.displayNotice("처리를 실패하였습니다. 다시 시도해 주세요.");
                         }
                     }
                 }
                 else{
-                    CounterView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                    CounterView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                 }
 
             } catch (IOException e) {
-                CounterView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                CounterView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                 e.printStackTrace();
             }
         }
@@ -210,7 +213,7 @@ public class CounterController {
                     CounterView.displayList(visits);
                     CounterView.display("------------------------------------------\n");
                 } else {
-                    CounterView.display("잘못 입력하셨습니다. 다시 선택해 주세요 !");
+                    CounterView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
                 }
             } catch (IOException e) {
                 e.printStackTrace();

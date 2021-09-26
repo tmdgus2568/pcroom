@@ -38,7 +38,6 @@ public class VisitDAO {
         if(visit.getVisit_date() == null){
             sql = "insert into visit(customer_id, seat_id, exit_date) " +
                     "values(?,?,?)";
-            System.out.println(visit.getExit_date());
         }
         else if(visit.getExit_date() == null){
             sql = "insert into visit(customer_id, seat_id, visit_date) " +
