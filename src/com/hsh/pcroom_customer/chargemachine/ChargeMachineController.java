@@ -47,7 +47,8 @@ public class ChargeMachineController {
                         ChargeMachineView.display2("결제를 진행하시겠습니까? (Y/N) : ");
                         String answer = br.readLine();
                         if(answer.equals("Y") || answer.equals("y")){
-                            int result = service.updateCustomerForBuyTime(customer.getId(),choiceRateplan.getApply_time(),choiceRateplan.getId());
+                            int result = service.updateCustomerForBuyTime(customer.getId(),
+                                    choiceRateplan.getApply_time(),choiceRateplan.getId());
                             if(result == 1){
                                 ChargeMachineView.displayNotice("충전이 완료되었습니다.");
                             }
@@ -72,6 +73,7 @@ public class ChargeMachineController {
                 }
             }catch (IOException | IllegalArgumentException e){
                 ChargeMachineView.displayNotice("입력오류가 발생했습니다. 확인 후 다시 입력해 주세요.");
+                e.printStackTrace();
             }
 
         }

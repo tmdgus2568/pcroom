@@ -8,13 +8,14 @@ public class CounterService {
     SeatDAO seatDAO = new SeatDAO();
     PorderDAO porderDAO = new PorderDAO();
     VisitDAO visitDAO = new VisitDAO();
+    CheckporderDAO checkporderDAO = new CheckporderDAO();
     public List<SeatVO> selectSeatAll(){
         return seatDAO.selectSeatAll();
     }
-    public List<CheckporderVO> selectPorderAllByStatus(String status){
-        return porderDAO.selectPorderAllByStatus(status);
+    public List<CheckporderVO> selectCheckporderAllByStatus(String status){
+        return checkporderDAO.selectCheckporderAllByStatus(status);
     }
-    public boolean updatePorderById(int id){
+    public int updatePorderById(int id){
         return porderDAO.updatePorderById(id);
     }
     public List<VisitVO> selectVisitAll(){

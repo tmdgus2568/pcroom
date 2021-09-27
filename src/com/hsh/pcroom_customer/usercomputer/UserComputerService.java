@@ -11,7 +11,7 @@ public class UserComputerService {
     PorderDAO porderDAO = new PorderDAO();
     ProductDAO productDAO = new ProductDAO();
 
-    public boolean insertCustomer(CustomerVO customer){
+    public int insertCustomer(CustomerVO customer){
         return customerDAO.insertCustomer(customer);
     }
 

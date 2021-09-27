@@ -122,6 +122,7 @@ public class UserComputerController {
                 String pattern = "^[a-zA-Z0-9]*$";
                 if(!password.matches(pattern) || password.equals("")){
                     UserComputerView.displayNotice("비밀번호 형식이 잘못되었습니다. 다시 입력해 주세요.");
+                    continue;
                 }
                 break;
 
@@ -199,10 +200,7 @@ public class UserComputerController {
     private static void signUp(){
         CustomerVO newCustomer = signUpForm();
 
-        // insert의 경우 무조건 false가 나오므로
-        // false여야 성공한 것이다.
-
-        if(!service.insertCustomer(newCustomer)){
+        if(service.insertCustomer(newCustomer)==1){
             UserComputerView.displayNotice("회원가입이 완료되었습니다.");
         }
         else{
@@ -232,9 +230,11 @@ public class UserComputerController {
     public static class Remain0ExitThread extends Thread{
         private long time;
         private CustomerVO updateCustomer;
-        Remain0ExitThread(long time, CustomerVO updateCustomer){
+        private VisitVO visit;
+        Remain0ExitThread(long time, CustomerVO updateCustomer, VisitVO visit){
             this.time = time;
             this.updateCustomer = updateCustomer;
+            this.visit = visit;
         }
 
         @Override
@@ -246,6 +246,11 @@ public class UserComputerController {
 
                 int result = service.updateCustomerRemainTime(updateCustomer);
                 if(result == 1){
+
+                    visit.setVisit_date(null);
+                    visit.setExit_date(new Date(System.currentTimeMillis()));
+
+                    service.insertVisit(visit);
                     exit(choiceSeatId);
                 }
                 else{
@@ -286,7 +291,7 @@ public class UserComputerController {
         long exit_time = remain_time + now_time; // 끝나는시간(밀리초)
         java.util.Date exit_date = new java.util.Date(exit_time); // 끝나는시간(date)
 
-        Remain0ExitThread thread = new Remain0ExitThread(remain_time, customer);
+        Remain0ExitThread thread = new Remain0ExitThread(remain_time, customer,visit);
         thread.start();
 
         CustomerVO updateCustomer = customer;
@@ -298,7 +303,8 @@ public class UserComputerController {
                 switch (answer){
                     case "1":
                         // 종료될시간 - 현재시간
-                        UserComputerView.displayNotice(millisToFormat(remain_time - (System.currentTimeMillis()-now_time)));
+                        UserComputerView.displayNotice(millisToFormat
+                                (remain_time - (System.currentTimeMillis()-now_time)));
 
                         break;
                     case "2":
@@ -383,8 +389,7 @@ public class UserComputerController {
                             porder.setRequest(ans_req);
                             porder.setSeat_id(choiceSeatId);
                             porder.setPrice_sum(cart_sum);
-//
-//                            insertPorder(PorderVO porder, List<Integer> product_ids, List<Integer> product_nums)
+
                             int result = service.insertPorder(porder, cart);
                             if(result == cart.size()) UserComputerView.displayNotice("주문이 성공적으로 완료되었습니다!");
                             else UserComputerView.displayNotice("주문에 실패하였습니다..");

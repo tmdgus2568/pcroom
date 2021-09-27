@@ -19,10 +19,14 @@ public class PorderDAO {
     // 주문사항을 저장한다.
     public int insertPorder(PorderVO porder, List<PorderdetailVO> porderdeatails){
         int result = 0;
-        String porder_sql = "insert into porder(customer_id, payment_way, request, payment_date, seat_id, price_sum)" +
+        String porder_sql = "insert into porder" +
+                "(customer_id, payment_way, request, payment_date, seat_id, price_sum)" +
                 " values(?,?,?,?,?,?)";
-        String searchid_sql = "select id from porder where customer_id=? and payment_date=? and seat_id=?";
-        String porder_detail_sql = "insert into porder_detail(porder_id, product_id, num, price,name) values(?,?,?,?,?)";
+        String searchid_sql = "select id from porder " +
+                "where customer_id=? and payment_date=? and seat_id=?";
+        String porder_detail_sql = "insert into porder_detail" +
+                "(porder_id, product_id, num, price,name) " +
+                "values(?,?,?,?,?)";
         Connection conn = DBUtil.dbConnect();
         PreparedStatement st = null;
         Date current = new Date(System.currentTimeMillis());
@@ -54,6 +58,7 @@ public class PorderDAO {
                     porder_id = rs.getInt("id");
                 }
 
+                // Porder_detail에 저장
                 st = conn.prepareStatement(porder_detail_sql);
                 for(int i=0;i<porderdeatails.size();i++){
                     PorderdetailVO porderdetail = porderdeatails.get(i);
@@ -88,32 +93,8 @@ public class PorderDAO {
         return 0;
     }
 
-    public List<CheckporderVO> selectPorderAllByStatus(String status){
-        Connection conn = DBUtil.dbConnect();
-        PreparedStatement st = null;
-        String sql = "select PORDER.*, PORDER_DETAIL.* from porder " +
-                "inner join PORDER_DETAIL on PORDER.id=PORDER_DETAIL.porder_id " +
-                "where PORDER.payment_status=? order by PORDER.id";
-        ResultSet rs = null;
-        List<CheckporderVO> checkporders = new ArrayList<>();
-        try {
-            st = conn.prepareStatement(sql);
-            st.setString(1,status);
-            rs = st.executeQuery();
-            while (rs.next()){
-                checkporders.add(makeCheckporder(rs));
-            }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            DBUtil.dbClose(conn, st, rs);
-        }
-        return checkporders;
-
-    }
-
-    public boolean updatePorderById(int id){
+    public int updatePorderById(int id){
         Connection conn = DBUtil.dbConnect();
         PreparedStatement st = null;
         String sql = "update porder set payment_status=? where id=?";
@@ -126,36 +107,12 @@ public class PorderDAO {
 
             result = st.executeUpdate();
 
-            if(result!=1){
-                conn.rollback();
-                return false;
-            }
-            conn.commit();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             DBUtil.dbClose(conn, st, null);
         }
-        return true;
-    }
-
-    public CheckporderVO makeCheckporder(ResultSet rs) throws SQLException {
-        CheckporderVO checkporder = new CheckporderVO();
-
-        checkporder.setPorder_id(rs.getInt("id"));
-        checkporder.setCustomer_id(rs.getString("customer_id"));
-        checkporder.setPayment_way(rs.getString("payment_way"));
-        checkporder.setRequest(rs.getString("request"));
-        checkporder.setPayment_date(rs.getDate("payment_date"));
-        checkporder.setSeat_id(rs.getInt("seat_id"));
-        checkporder.setPrice_sum(rs.getInt("price_sum"));
-        checkporder.setProduct_id(rs.getInt("product_id"));
-        checkporder.setNum(rs.getInt("num"));
-        checkporder.setPrice(rs.getInt("price"));
-        checkporder.setName(rs.getString("name"));
-
-        return checkporder;
+        return result;
     }
 
     public PorderVO makePorder(ResultSet rs) throws SQLException {

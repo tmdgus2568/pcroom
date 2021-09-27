@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 // 카운터에서 쓰는 프로그램.
-// 좌석 확인, 주문확인, 회원 정보 수정, 방문기록 확인 기능
+// 좌석 확인, 주문확인, 방문기록 확인 기능
 
 public class CounterController {
     static CounterService service = new CounterService();
@@ -96,7 +96,7 @@ public class CounterController {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         CounterView.display("\n[주문확인]");
 
-        List<CheckporderVO> checkporders = service.selectPorderAllByStatus("N");
+        List<CheckporderVO> checkporders = service.selectCheckporderAllByStatus("N");
 
         int prev_id = 0;
 
@@ -126,7 +126,7 @@ public class CounterController {
                 else if(ans.equals("2")){
                     CounterView.display("\n[주문확인]");
 
-                    checkporders = service.selectPorderAllByStatus("N");
+                    checkporders = service.selectCheckporderAllByStatus("N");
 
                     prev_id = 0;
 
@@ -162,7 +162,6 @@ public class CounterController {
 
                     else{
                         CounterView.displayNotice("잘못 입력하셨습니다. 다시 선택해 주세요 !");
-                        System.out.println(choicePorder.getPorder_id());
                         continue;
                     }
 
@@ -171,7 +170,7 @@ public class CounterController {
 
                     }
                     else{
-                        if(service.updatePorderById(Integer.parseInt(ans_ordernum))){
+                        if(service.updatePorderById(Integer.parseInt(ans_ordernum))==1){
                             CounterView.displayNotice("처리가 완료되었습니다.");
                         }
                         else{

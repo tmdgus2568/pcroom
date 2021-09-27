@@ -181,3 +181,7 @@ alter table PORDER add price_sum int not null;
 
 select * from cols;
 
+
+select dbms_metadata.get_ddl('TABLE','s', 'PCROOM') from dual;
+
+

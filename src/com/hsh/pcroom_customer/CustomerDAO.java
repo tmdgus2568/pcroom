@@ -8,9 +8,10 @@ import java.sql.*;
 // String id, String password, String phone, String name, Date birthday, String address
 public class CustomerDAO {
 
-    public boolean insertCustomer(CustomerVO customer){
-        boolean result = false;
-        String sql = "INSERT into CUSTOMER(id,password,phone,name,birthday,address,join_date,remain_time,role) " +
+    public int insertCustomer(CustomerVO customer){
+        int result = 0;
+        String sql = "INSERT into CUSTOMER(id,password,phone,name,birthday," +
+                "address,join_date,remain_time,role) " +
                         "values(?,?,?,?,?,?,?,?,?)";
         Connection conn = DBUtil.dbConnect();
         PreparedStatement st = null;
@@ -26,7 +27,7 @@ public class CustomerDAO {
             st.setInt(8,  0);
             st.setString(9,customer.getRole());
 
-            result = st.execute();
+            result = st.executeUpdate();
 
 
         }catch (SQLException e){
