@@ -1,7 +1,6 @@
 package com.hsh.pcroom_customer.counter;
 
-import com.hsh.pcroom_customer.Checkporder;
-import com.hsh.pcroom_customer.PorderVO;
+import com.hsh.pcroom_customer.CheckporderVO;
 import com.hsh.pcroom_customer.SeatVO;
 import com.hsh.pcroom_customer.VisitVO;
 
@@ -97,11 +96,11 @@ public class CounterController {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         CounterView.display("\n[주문확인]");
 
-        List<Checkporder> checkporders = service.selectPorderAllByStatus("N");
+        List<CheckporderVO> checkporders = service.selectPorderAllByStatus("N");
 
         int prev_id = 0;
 
-        for(Checkporder c:checkporders){
+        for(CheckporderVO c:checkporders){
             if(prev_id != c.getPorder_id()){
                 if(prev_id!=0){
                     CounterView.display("\n===============================================");
@@ -131,7 +130,7 @@ public class CounterController {
 
                     prev_id = 0;
 
-                    for(Checkporder c:checkporders){
+                    for(CheckporderVO c:checkporders){
                         if(prev_id != c.getPorder_id()){
                             if(prev_id!=0){
                                 CounterView.display("\n===============================================");
@@ -151,9 +150,9 @@ public class CounterController {
                     CounterView.display2("결제완료처리할 주문번호를 선택해 주세요 : ");
                     String ans_ordernum = br.readLine();
                     String pattern = "^[0-9]*$";
-                    Checkporder choicePorder = null;
+                    CheckporderVO choicePorder = null;
                     if(ans_ordernum.matches(pattern)){
-                        for(Checkporder checkporder:checkporders){
+                        for(CheckporderVO checkporder:checkporders){
                             if(checkporder.getPorder_id()==Integer.parseInt(ans_ordernum)){
                                 choicePorder = checkporder;
                                 break;

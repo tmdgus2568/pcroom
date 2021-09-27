@@ -11,7 +11,7 @@ public class CounterService {
     public List<SeatVO> selectSeatAll(){
         return seatDAO.selectSeatAll();
     }
-    public List<Checkporder> selectPorderAllByStatus(String status){
+    public List<CheckporderVO> selectPorderAllByStatus(String status){
         return porderDAO.selectPorderAllByStatus(status);
     }
     public boolean updatePorderById(int id){

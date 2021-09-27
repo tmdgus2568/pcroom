@@ -88,14 +88,14 @@ public class PorderDAO {
         return 0;
     }
 
-    public List<Checkporder> selectPorderAllByStatus(String status){
+    public List<CheckporderVO> selectPorderAllByStatus(String status){
         Connection conn = DBUtil.dbConnect();
         PreparedStatement st = null;
         String sql = "select PORDER.*, PORDER_DETAIL.* from porder " +
                 "inner join PORDER_DETAIL on PORDER.id=PORDER_DETAIL.porder_id " +
                 "where PORDER.payment_status=? order by PORDER.id";
         ResultSet rs = null;
-        List<Checkporder> checkporders = new ArrayList<>();
+        List<CheckporderVO> checkporders = new ArrayList<>();
         try {
             st = conn.prepareStatement(sql);
             st.setString(1,status);
@@ -140,8 +140,8 @@ public class PorderDAO {
         return true;
     }
 
-    public Checkporder makeCheckporder(ResultSet rs) throws SQLException {
-        Checkporder checkporder = new Checkporder();
+    public CheckporderVO makeCheckporder(ResultSet rs) throws SQLException {
+        CheckporderVO checkporder = new CheckporderVO();
 
         checkporder.setPorder_id(rs.getInt("id"));
         checkporder.setCustomer_id(rs.getString("customer_id"));

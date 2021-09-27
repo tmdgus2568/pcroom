@@ -2,7 +2,7 @@ package com.hsh.pcroom_customer;
 
 import java.sql.Date;
 
-public class Checkporder {
+public class CheckporderVO {
     private int porder_id;
     private String customer_id;
     private String payment_way;
@@ -15,7 +15,7 @@ public class Checkporder {
     private int price;
     private String name;
 
-    public Checkporder(int porder_id, String customer_id, String payment_way, String request, Date payment_date, int seat_id, int price_sum, int product_id, int num, int price, String name) {
+    public CheckporderVO(int porder_id, String customer_id, String payment_way, String request, Date payment_date, int seat_id, int price_sum, int product_id, int num, int price, String name) {
         this.porder_id = porder_id;
         this.customer_id = customer_id;
         this.payment_way = payment_way;
@@ -29,7 +29,7 @@ public class Checkporder {
         this.name = name;
     }
 
-    public Checkporder() {
+    public CheckporderVO() {
     }
 
     public int getPorder_id() {
